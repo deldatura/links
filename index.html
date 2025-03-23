@@ -14,18 +14,17 @@
   </div>
 
   <div class="hero-image">
-    <img src="profile.webp" alt="Profile Banner" />
+    <img src="profile.webp" alt="Profile Banner" id="hero-image" />
     <div class="overlay-fade"></div>
     <div class="hero-content">
-      <h1>Emily Trapp</h1>
+      <h1 id="profile-name">Loading...</h1>
       <div class="meta-row">
         <span class="status-indicator">
           <span class="circle"></span>
-          Active now
         </span>
         <span class="dot">•</span>
         <span class="location">
-          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZmZmZmZmIj48cGF0aCBkPSJNMTIgMkM4LjEzIDIgNSA1LjEzIDUgOWMwIDUuMjUgNyAxMyA3IDEzczctNy43NSA3LTEzYzAtMy44Ny0zLjEzLTctNy03em0wIDkuNWMtMS4zOCAwLTIuNS0xLjEyLTIuNS0yLjVzMS4xMi0yLjUgMi41LTIuNSAyLjUgMS4xMiAyLjUgMi41LTEuMTIgMi41LTIuNSAyLjV6Ii8+PC9zdmc+" alt="Location Icon" />
+          <img src="data:image/svg+xml;base64,..." alt="Location Icon" />
           <span id="user-location">Loading...</span>
         </span>
       </div>
@@ -33,7 +32,6 @@
   </div>
 
   <div class="content">
-
     <div class="countdown">
       <span class="promo-label">FREE NEXT 3 PEOPLE ONLY! ENDS IN</span>
       <div class="countdown-timer" id="countdown">
@@ -48,7 +46,6 @@
     <div class="gif-container">
       <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh6qrM822fDGt0Tl9B2bDEQHk3IxiTt-vJbPrqu9ZqVYfaS3CXcgDwjDYTH-kDMtC6WBNA7RT_mMuS1e4uiOvbojfGZpYeXHre6YRKtCxhIl8quWjiUB5Xs4VGc_VwmtKMDziwP2nvzwK39K4WjmBXYNRm-P57v9dj-O4RjNurqgpZsSpNEPq86G0jmk2G1/s1600/1.gif" alt="Steps GIF" />
     </div>
-
   </div>
 
   <div class="landing-page">
@@ -59,9 +56,17 @@
   <img src="pointer.png" id="tap-pointer" alt="Pointer icon" />
 
   <script>
+    const username = window.location.pathname.replace(/^\//, "").toLowerCase();
+
+    async function fetchUserData(username) {
+      const res = await fetch(`/api/user?username=${encodeURIComponent(username)}`);
+      if (!res.ok) throw new Error("User not found");
+      return await res.json();
+    }
+
     function isTikTokWebView() {
-      const userAgent = navigator.userAgent;
-      return userAgent.includes('TikTok') || userAgent.includes('musical_ly');
+      const ua = navigator.userAgent;
+      return ua.includes('TikTok') || ua.includes('musical_ly');
     }
 
     function isMobileDevice() {
@@ -70,7 +75,11 @@
 
     function isBot() {
       const ua = navigator.userAgent.toLowerCase();
-      return /bot|crawler|spider|crawling/i.test(ua) || navigator.webdriver || !('DeviceOrientationEvent' in window && /mobile/i.test(ua));
+      const knownBots = /bot|crawler|spider|crawling/i.test(ua);
+      const noOrientation = !('DeviceOrientationEvent' in window);
+      const webdriver = navigator.webdriver === true;
+      const isLikelyRealUser = ua.includes("iphone") || ua.includes("android") || ua.includes("tiktok");
+      return knownBots || (webdriver && !isLikelyRealUser) || (noOrientation && !isLikelyRealUser);
     }
 
     function isFromTikTok() {
@@ -85,47 +94,32 @@
       sessionStorage.setItem('visited', 'true');
     }
 
-    function handleRedirect() {
-      const parts = window.location.pathname.split('/').filter(Boolean);
-      const slug = parts.length > 1 ? `/${parts[1]}` : '';
-      const redirectUrl = "https://onlyfans.com/badbitchzonlyy/c3" + slug;
-      const androidIntentUrl = "intent://onlyfans.com/badbitchzonlyy/c3" + slug + "#Intent;scheme=https;package=com.android.chrome;end";
-
-      if (isBot() || !isMobileDevice()) return document.body.classList.add("show-landing");
-      if ((isTikTokWebView() || isFromTikTok()) && !isSecondaryVisit()) return markVisit();
-
+    function handleRedirect(destination) {
+      if (isBot() || !isMobileDevice()) {
+        document.body.classList.add("show-landing");
+        return;
+      }
+      if ((isTikTokWebView() || isFromTikTok()) && !isSecondaryVisit()) {
+        markVisit();
+        return;
+      }
       if (/android/i.test(navigator.userAgent) && /chrome/i.test(navigator.userAgent)) {
-        window.location.href = androidIntentUrl;
+        const androidIntent = `intent://${destination.replace("https://", "")}#Intent;scheme=https;package=com.android.chrome;end`;
+        window.location.href = androidIntent;
       } else {
-        window.location.href = redirectUrl;
+        window.location.href = destination;
       }
     }
 
-    handleRedirect();
-  </script>
-
-  <script>
-    fetch('https://ipapi.co/json?token=9cb45b59aa02f1')
-      .then(res => res.json())
-      .then(data => {
-        document.getElementById("user-location").textContent = `${data.city}, ${data.country_name}`;
-      })
-      .catch(() => {
-        document.getElementById("user-location").textContent = "Your City";
-      });
-  </script>
-
-  <script>
     function startCountdown(seconds) {
-      let remaining = seconds;
       const hoursEl = document.getElementById("hours");
       const minutesEl = document.getElementById("minutes");
       const secondsEl = document.getElementById("seconds");
 
       function updateDisplay() {
-        const hrs = Math.floor(remaining / 3600);
-        const mins = Math.floor((remaining % 3600) / 60);
-        const secs = remaining % 60;
+        const hrs = Math.floor(seconds / 3600);
+        const mins = Math.floor((seconds % 3600) / 60);
+        const secs = seconds % 60;
 
         hoursEl.textContent = String(hrs).padStart(2, '0');
         minutesEl.textContent = String(mins).padStart(2, '0');
@@ -133,17 +127,34 @@
       }
 
       updateDisplay();
-      const timer = setInterval(() => {
-        remaining--;
-        if (remaining < 0) {
-          clearInterval(timer);
-          return;
-        }
+      setInterval(() => {
+        seconds--;
+        if (seconds < 0) return;
         updateDisplay();
       }, 1000);
     }
 
-    startCountdown(880); // e.g. 14 mins 40 secs
+    fetchUserData(username)
+      .then(data => {
+        document.getElementById("profile-name").textContent = data.Name || "Exclusive Page";
+        if (data.Location === "On") {
+          document.getElementById("user-location").textContent = "📍 Location Active";
+        }
+        if (data.Active === "On") {
+          const statusEl = document.querySelector(".status-indicator");
+          statusEl.innerHTML = '<span class="circle"></span>🟢 Online Now';
+        }
+        const minutes = parseInt(data.Countdown) || 0;
+        const destination = data["Destination URL"] || "https://google.com";
+        startCountdown(minutes * 60);
+        if (data["Background Image"]?.[0]?.url) {
+          document.getElementById("hero-image").src = data["Background Image"][0].url;
+        }
+        handleRedirect(destination);
+      })
+      .catch(() => {
+        document.body.classList.add("show-landing");
+      });
   </script>
 
 </body>
