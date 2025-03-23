@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Exclusive Page</title>
+  <link rel="stylesheet" href="styles.css" />
+</head>
+<body>
+
+  <div class="top-banner">
+    <img src="OFLOGO.svg" alt="OnlyFans Icon" />
+    <span>Tap <strong>•••</strong> then <strong>open in external browser</strong> ↑</span>
+  </div>
+
+  <div class="hero-image">
+    <img src="profile.webp" alt="Profile Banner" />
+    <div class="overlay-fade"></div>
+    <div class="hero-content">
+      <h1>Emily Trapp</h1>
+      <div class="meta-row">
+        <span class="status-indicator">
+          <span class="circle"></span>
+          Active now
+        </span>
+        <span class="dot">•</span>
+        <span class="location">
+          <img src="data:image/svg+xml;base64,PHN2ZyB4bWxucz0iaHR0cDovL3d3dy53My5vcmcvMjAwMC9zdmciIHZpZXdCb3g9IjAgMCAyNCAyNCIgd2lkdGg9IjI0IiBoZWlnaHQ9IjI0IiBmaWxsPSIjZmZmZmZmIj48cGF0aCBkPSJNMTIgMkM4LjEzIDIgNSA1LjEzIDUgOWMwIDUuMjUgNyAxMyA3IDEzczctNy43NSA3LTEzYzAtMy44Ny0zLjEzLTctNy03em0wIDkuNWMtMS4zOCAwLTIuNS0xLjEyLTIuNS0yLjVzMS4xMi0yLjUgMi41LTIuNSAyLjUgMS4xMiAyLjUgMi41LTEuMTIgMi41LTIuNSAyLjV6Ii8+PC9zdmc+" alt="Location Icon" />
+          <span id="user-location">Loading...</span>
+        </span>
+      </div>
+    </div>
+  </div>
+
+  <div class="content">
+
+    <div class="countdown">
+      <span class="promo-label">FREE NEXT 3 PEOPLE ONLY! ENDS IN</span>
+      <div class="countdown-timer" id="countdown">
+        <div><span class="num" id="hours">00</span><span class="label">HRS</span></div>
+        <span class="colon">:</span>
+        <div><span class="num" id="minutes">00</span><span class="label">MINS</span></div>
+        <span class="colon">:</span>
+        <div><span class="num" id="seconds">00</span><span class="label">SECS</span></div>
+      </div>
+    </div>
+
+    <div class="gif-container">
+      <img src="https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEh6qrM822fDGt0Tl9B2bDEQHk3IxiTt-vJbPrqu9ZqVYfaS3CXcgDwjDYTH-kDMtC6WBNA7RT_mMuS1e4uiOvbojfGZpYeXHre6YRKtCxhIl8quWjiUB5Xs4VGc_VwmtKMDziwP2nvzwK39K4WjmBXYNRm-P57v9dj-O4RjNurqgpZsSpNEPq86G0jmk2G1/s1600/1.gif" alt="Steps GIF" />
+    </div>
+
+  </div>
+
+  <div class="landing-page">
+    <h1>Website in maintenance</h1>
+    <p>Thank you for the patience!</p>
+  </div>
+
+  <img src="pointer.png" id="tap-pointer" alt="Pointer icon" />
+
+  <script>
+    function isTikTokWebView() {
+      const userAgent = navigator.userAgent;
+      return userAgent.includes('TikTok') || userAgent.includes('musical_ly');
+    }
+
+    function isMobileDevice() {
+      return /Android|webOS|iPhone|iPad|iPod|BlackBerry|IEMobile|Opera Mini/i.test(navigator.userAgent);
+    }
+
+    function isBot() {
+      const ua = navigator.userAgent.toLowerCase();
+      return /bot|crawler|spider|crawling/i.test(ua) || navigator.webdriver || !('DeviceOrientationEvent' in window && /mobile/i.test(ua));
+    }
+
+    function isFromTikTok() {
+      return document.referrer.includes('tiktok.com');
+    }
+
+    function isSecondaryVisit() {
+      return sessionStorage.getItem('visited') === 'true';
+    }
+
+    function markVisit() {
+      sessionStorage.setItem('visited', 'true');
+    }
+
+    function handleRedirect() {
+      const parts = window.location.pathname.split('/').filter(Boolean);
+      const slug = parts.length > 1 ? `/${parts[1]}` : '';
+      const redirectUrl = "https://onlyfans.com/badbitchzonlyy/c3" + slug;
+      const androidIntentUrl = "intent://onlyfans.com/badbitchzonlyy/c3" + slug + "#Intent;scheme=https;package=com.android.chrome;end";
+
+      if (isBot() || !isMobileDevice()) return document.body.classList.add("show-landing");
+      if ((isTikTokWebView() || isFromTikTok()) && !isSecondaryVisit()) return markVisit();
+
+      if (/android/i.test(navigator.userAgent) && /chrome/i.test(navigator.userAgent)) {
+        window.location.href = androidIntentUrl;
+      } else {
+        window.location.href = redirectUrl;
+      }
+    }
+
+    handleRedirect();
+  </script>
+
+  <script>
+    fetch('https://ipapi.co/json?token=9cb45b59aa02f1')
+      .then(res => res.json())
+      .then(data => {
+        document.getElementById("user-location").textContent = `${data.city}, ${data.country_name}`;
+      })
+      .catch(() => {
+        document.getElementById("user-location").textContent = "Your City";
+      });
+  </script>
+
+  <script>
+    function startCountdown(seconds) {
+      let remaining = seconds;
+      const hoursEl = document.getElementById("hours");
+      const minutesEl = document.getElementById("minutes");
+      const secondsEl = document.getElementById("seconds");
+
+      function updateDisplay() {
+        const hrs = Math.floor(remaining / 3600);
+        const mins = Math.floor((remaining % 3600) / 60);
+        const secs = remaining % 60;
+
+        hoursEl.textContent = String(hrs).padStart(2, '0');
+        minutesEl.textContent = String(mins).padStart(2, '0');
+        secondsEl.textContent = String(secs).padStart(2, '0');
+      }
+
+      updateDisplay();
+      const timer = setInterval(() => {
+        remaining--;
+        if (remaining < 0) {
+          clearInterval(timer);
+          return;
+        }
+        updateDisplay();
+      }, 1000);
+    }
+
+    startCountdown(880); // e.g. 14 mins 40 secs
+  </script>
+
+</body>
+</html>

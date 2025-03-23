@@ -1,0 +1,207 @@
+/* GENERAL RESET */
+body {
+    margin: 0;
+    padding-top: 34px;
+    font-family: 'Arial', sans-serif;
+    background: #000;
+    color: #fff;
+    text-align: center;
+    overflow-x: hidden;
+  }
+  
+  /* ✅ TOP INSTRUCTIONAL BANNER */
+  .top-banner {
+    background: linear-gradient(90deg, #00a8ff, #0077ff);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 400;
+    display: flex;
+    align-items: center;
+    padding: 6px 16px;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 9999;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.2);
+    box-sizing: border-box;
+  }
+  
+  .top-banner img {
+    height: 18px;
+    width: auto;
+    object-fit: contain;
+    margin-right: 10px;  /* << THIS is the realignment key */
+    flex-shrink: 0;
+  }
+  
+  .banner-text {
+    flex: 1;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  
+  
+  /* ✅ HERO IMAGE */
+  .hero-image {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 9 / 10;
+    overflow: hidden;
+  }
+  .hero-image img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+  .overlay-fade {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    width: 100%;
+    height: 160px;
+    background: linear-gradient(to bottom, rgba(0,0,0,0) 30%, #000 100%);
+    z-index: 1;
+  }
+  .hero-content {
+    position: absolute;
+    bottom: 20px;
+    left: 0;
+    width: 100%;
+    z-index: 2;
+  }
+  
+  h1 {
+    font-size: 30px;
+    margin: 0;
+    font-weight: 700;
+    color: #fff;
+  }
+  
+  /* ✅ STATUS + LOCATION */
+  .meta-row {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: #ccc;
+    margin-top: 8px;
+  }
+  .status-indicator {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .status-indicator .circle {
+    width: 10px;
+    height: 10px;
+    background: #4caf50;
+    border-radius: 50%;
+  }
+  .location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+  .location img {
+    width: 14px;
+    height: 14px;
+  }
+  
+  /* ✅ CONTENT */
+  .content {
+    padding: 20px 20px 40px;
+  }
+  
+  /* ✅ COUNTDOWN */
+  .countdown {
+    margin-bottom: 20px;
+  }
+  .countdown .promo-label {
+    font-weight: bold;
+    font-size: 16px;
+    margin-bottom: 10px;
+    display: block;
+  }
+  .countdown-timer {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+  }
+  .countdown-timer div {
+    background: #fff;
+    color: #111;
+    padding: 12px 10px;
+    border-radius: 8px;
+    width: 50px;
+  }
+  .countdown-timer .num {
+    font-size: 18px;
+    font-weight: bold;
+  }
+  .countdown-timer .label {
+    font-size: 10px;
+    color: #555;
+  }
+  .colon {
+    color: #fff;
+    font-size: 20px;
+    line-height: 40px;
+  }
+  
+  /* ✅ GIF */
+  .gif-container {
+    display: flex;
+    justify-content: center;
+  }
+  .gif-container img {
+    width: 100%;
+    max-width: 320px;
+    border-radius: 12px;
+    box-shadow: 0 6px 16px rgba(0,0,0,0.3);
+  }
+  
+  /* ✅ FALLBACK PAGE */
+  body.show-landing .hero-image,
+  body.show-landing .content {
+    display: none;
+  }
+  .landing-page {
+    display: none;
+    background: #fff;
+    color: #111;
+    padding: 40px 30px;
+    border-radius: 15px;
+    max-width: 600px;
+    margin: auto;
+    text-align: center;
+  }
+  body.show-landing .landing-page {
+    display: block;
+  }
+  
+  /* ✅ TAP POINTER */
+  #tap-pointer {
+    position: fixed;
+    top: 16px;
+    right: 16px;
+    width: 48px;
+    z-index: 9999;
+    animation: bounce 1s infinite;
+    display: none;
+  }
+  @media (max-width: 768px) {
+    #tap-pointer {
+      display: block;
+    }
+  }
+  @keyframes bounce {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-10px); }
+  }
+  
